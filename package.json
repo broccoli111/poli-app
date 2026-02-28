@@ -1,0 +1,23 @@
+{
+  "name": "poli-app",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter @poli/web dev",
+    "dev:mobile": "pnpm --filter @poli/mobile start",
+    "build:web": "pnpm --filter @poli/web build",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint",
+    "test": "vitest run",
+    "smoke": "npx tsx tools/smoke.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
