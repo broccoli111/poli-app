@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Poli",
+    "slug": "poli-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "poli",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.poli.app",
+      "usesAppleSignIn": true
+    },
+    "android": {
+      "package": "com.poli.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#2563EB"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-apple-authentication",
+      "expo-notifications",
+      "expo-secure-store"
+    ]
+  }
+}
