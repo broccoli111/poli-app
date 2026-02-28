@@ -78,7 +78,7 @@ function PoliticianDetail() {
       .order('voted_at', { ascending: false })
       .limit(20);
 
-    setVotes((voteData ?? []) as typeof votes);
+    setVotes((voteData ?? []) as unknown as typeof votes);
     setLoading(false);
   }, [id, supabase]);
 

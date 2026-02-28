@@ -42,7 +42,7 @@ function ProfileContent() {
       .from('user_bookmarks')
       .select('id, bill_id, bills(title, bill_number)')
       .eq('user_id', user.id);
-    setBookmarkedBills((data as typeof bookmarkedBills) ?? []);
+    setBookmarkedBills((data as unknown as typeof bookmarkedBills) ?? []);
   }, [user, supabase]);
 
   const loadNotifPrefs = useCallback(async () => {

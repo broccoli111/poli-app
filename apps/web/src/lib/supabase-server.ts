@@ -1,4 +1,4 @@
-import { createServerClient, type CookieMethods } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 export function getSupabaseServerClient() {
@@ -11,14 +11,14 @@ export function getSupabaseServerClient() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options as never));
           } catch {
             // Server component - can't set cookies
           }
         },
-      } as CookieMethods,
+      },
     }
   );
 }
