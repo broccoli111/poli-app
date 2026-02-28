@@ -1,0 +1,16 @@
+{
+  "name": "poli-app",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter @poli/web dev",
+    "dev:mobile": "pnpm --filter @poli/mobile start",
+    "build:web": "pnpm --filter @poli/web build",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "smoke": "npx tsx tools/smoke.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
