@@ -4,6 +4,7 @@
 -- Enable extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_cron";
+CREATE EXTENSION IF NOT EXISTS "pg_net";
 
 -- Jurisdictions
 CREATE TABLE IF NOT EXISTS jurisdictions (
@@ -359,6 +360,12 @@ CREATE POLICY "Users delete own push_tokens" ON user_push_tokens FOR DELETE USIN
 CREATE POLICY "Users read own deliveries" ON notification_deliveries FOR SELECT
   USING (notification_id IN (SELECT id FROM notifications WHERE user_id = auth.uid()));
 
+-- Authenticated users can insert/update sentiment aggregates (written on vote)
+CREATE POLICY "Authenticated insert bill_sentiment_aggregate" ON bill_sentiment_aggregate
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated update bill_sentiment_aggregate" ON bill_sentiment_aggregate
+  FOR UPDATE USING (auth.role() = 'authenticated');
+
 -- Service-role only write policies for ingestion tables
 -- (Edge Functions use service_role key, bypassing RLS)
 
@@ -368,3 +375,9 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('bill-text', 'bill-text',
 
 CREATE POLICY "Authenticated read bill-text" ON storage.objects
   FOR SELECT USING (bucket_id = 'bill-text' AND auth.role() = 'authenticated');
+
+CREATE POLICY "Service write bill-text" ON storage.objects
+  FOR INSERT WITH CHECK (bucket_id = 'bill-text');
+
+CREATE POLICY "Service update bill-text" ON storage.objects
+  FOR UPDATE USING (bucket_id = 'bill-text');

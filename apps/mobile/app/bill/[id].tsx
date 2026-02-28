@@ -11,6 +11,7 @@ import {
 import { useLocalSearchParams } from 'expo-router';
 import { useAuth } from '../../lib/auth-context';
 import { supabase } from '../../lib/supabase';
+import { submitSentiment } from '@poli/lib';
 import type { Bill, BillCategory, AiSummary, BillTextVersion, BillSentimentAggregate } from '@poli/types';
 import type { SentimentVote } from '@poli/types';
 
@@ -78,24 +79,20 @@ export default function BillDetailScreen() {
   const vote = async (v: SentimentVote) => {
     if (!user || !address) return;
     setVoting(true);
-    const { data: j } = await supabase
-      .from('jurisdictions').select('id')
-      .or(`level.eq.federal,and(level.eq.state,state_code.eq.${address.state_code})`).limit(1);
-    if (!j?.[0]) { setVoting(false); return; }
+    try {
+      const { data: j } = await supabase
+        .from('jurisdictions').select('id')
+        .or(`level.eq.federal,and(level.eq.state,state_code.eq.${address.state_code})`).limit(1);
+      if (!j?.[0]) { setVoting(false); return; }
 
-    const { data: existing } = await supabase
-      .from('user_bill_sentiment').select('id')
-      .eq('user_id', user.id).eq('bill_id', id).maybeSingle();
-
-    if (existing) {
-      await supabase.from('user_bill_sentiment')
-        .update({ vote: v, voted_at: new Date().toISOString() }).eq('id', existing.id);
-    } else {
-      await supabase.from('user_bill_sentiment').insert({ user_id: user.id, bill_id: id, vote: v });
+      await submitSentiment(supabase, user.id, id, v, j[0].id);
+      setUserVote(v);
+    } catch (err) {
+      console.error('Failed to submit vote:', err);
+    } finally {
+      setVoting(false);
+      load();
     }
-    setUserVote(v);
-    setVoting(false);
-    load();
   };
 
   const contactRep = () => {

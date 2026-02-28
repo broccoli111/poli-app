@@ -86,7 +86,7 @@ async function updateAggregate(
   current.total_votes++;
 
   if (agg) {
-    await supabase
+    const { error } = await supabase
       .from('bill_sentiment_aggregate')
       .update({
         support_count: current.support_count,
@@ -96,8 +96,9 @@ async function updateAggregate(
         updated_at: new Date().toISOString(),
       })
       .eq('id', agg.id);
+    if (error) console.error('Failed to update aggregate:', error.message);
   } else {
-    await supabase.from('bill_sentiment_aggregate').insert({
+    const { error } = await supabase.from('bill_sentiment_aggregate').insert({
       bill_id: billId,
       jurisdiction_id: jurisdictionId,
       support_count: current.support_count,
@@ -105,6 +106,7 @@ async function updateAggregate(
       neutral_count: current.neutral_count,
       total_votes: current.total_votes,
     });
+    if (error) console.error('Failed to insert aggregate:', error.message);
   }
 }
 

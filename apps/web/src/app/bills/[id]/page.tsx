@@ -7,6 +7,7 @@ import { RequireAuth } from '@/components/RequireAuth';
 import { ReportButton } from '@/components/ReportButton';
 import { useAuth } from '@/lib/auth-context';
 import { getSupabaseBrowserClient } from '@/lib/supabase-browser';
+import { submitSentiment } from '@poli/lib';
 import type { Bill, BillCategory, AiSummary, BillTextVersion, BillSentimentAggregate } from '@poli/types';
 import type { SentimentVote } from '@poli/types';
 
@@ -97,36 +98,24 @@ function BillDetailContent() {
     if (!user || !address) return;
     setVoteLoading(true);
 
-    const { data: jurisdictions } = await supabase
-      .from('jurisdictions')
-      .select('id')
-      .or(`level.eq.federal,and(level.eq.state,state_code.eq.${address.state_code})`)
-      .limit(1);
+    try {
+      const { data: jurisdictions } = await supabase
+        .from('jurisdictions')
+        .select('id')
+        .or(`level.eq.federal,and(level.eq.state,state_code.eq.${address.state_code})`)
+        .limit(1);
 
-    const jurisdictionId = jurisdictions?.[0]?.id;
-    if (!jurisdictionId) { setVoteLoading(false); return; }
+      const jurisdictionId = jurisdictions?.[0]?.id;
+      if (!jurisdictionId) { setVoteLoading(false); return; }
 
-    const { data: existing } = await supabase
-      .from('user_bill_sentiment')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('bill_id', id)
-      .maybeSingle();
-
-    if (existing) {
-      await supabase
-        .from('user_bill_sentiment')
-        .update({ vote, voted_at: new Date().toISOString() })
-        .eq('id', existing.id);
-    } else {
-      await supabase
-        .from('user_bill_sentiment')
-        .insert({ user_id: user.id, bill_id: id, vote });
+      await submitSentiment(supabase, user.id, id, vote, jurisdictionId);
+      setUserVote(vote);
+    } catch (err) {
+      console.error('Failed to submit vote:', err);
+    } finally {
+      setVoteLoading(false);
+      loadBill();
     }
-
-    setUserVote(vote);
-    setVoteLoading(false);
-    loadBill();
   };
 
   const openContactRep = () => {

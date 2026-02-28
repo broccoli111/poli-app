@@ -1,7 +1,16 @@
 -- Nightly ingestion & processing pipeline
--- Run this after enabling pg_cron and pg_net extensions
--- Replace PROJECT_REF with your actual Supabase project ref
--- Replace YOUR_SERVICE_ROLE_KEY with the actual service role key (store as a secret)
+--
+-- PREREQUISITES:
+-- 1. Enable pg_cron and pg_net extensions in your Supabase dashboard:
+--    Database > Extensions > search "pg_cron" and "pg_net" > Enable
+--
+-- 2. Store the service role key as a database setting:
+--    Run this in the SQL editor (replace with your actual key):
+--
+--    ALTER DATABASE postgres SET app.settings.service_role_key = 'your-service-role-key-here';
+--
+-- 3. Replace PROJECT_REF below with your Supabase project ref (the subdomain):
+--    e.g. if your URL is https://abcdefg.supabase.co, use abcdefg
 
 -- Step 1: Ingest federal bills at 1:00 AM UTC
 SELECT cron.schedule(
