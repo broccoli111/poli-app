@@ -9,8 +9,8 @@
 --
 --    ALTER DATABASE postgres SET app.settings.service_role_key = 'your-service-role-key-here';
 --
--- 3. Replace PROJECT_REF below with your Supabase project ref (the subdomain):
---    e.g. if your URL is https://abcdefg.supabase.co, use abcdefg
+-- 3. cywzijedttqyqjtiexal is set to: cywzijedttqyqjtiexal
+--    If you change projects, update all URLs below.
 
 -- Step 1: Ingest federal bills at 1:00 AM UTC
 SELECT cron.schedule(
@@ -18,7 +18,7 @@ SELECT cron.schedule(
   '0 1 * * *',
   $$
   SELECT net.http_post(
-    url := 'https://PROJECT_REF.supabase.co/functions/v1/ingest_federal_bills',
+    url := 'https://cywzijedttqyqjtiexal.supabase.co/functions/v1/ingest_federal_bills',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true),
       'Content-Type', 'application/json'
@@ -34,7 +34,7 @@ SELECT cron.schedule(
   '15 1 * * *',
   $$
   SELECT net.http_post(
-    url := 'https://PROJECT_REF.supabase.co/functions/v1/ingest_state_bills',
+    url := 'https://cywzijedttqyqjtiexal.supabase.co/functions/v1/ingest_state_bills',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true),
       'Content-Type', 'application/json'
@@ -50,7 +50,7 @@ SELECT cron.schedule(
   '30 1 * * *',
   $$
   SELECT net.http_post(
-    url := 'https://PROJECT_REF.supabase.co/functions/v1/ingest_bill_text',
+    url := 'https://cywzijedttqyqjtiexal.supabase.co/functions/v1/ingest_bill_text',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true),
       'Content-Type', 'application/json'
@@ -66,7 +66,7 @@ SELECT cron.schedule(
   '0 2 * * *',
   $$
   SELECT net.http_post(
-    url := 'https://PROJECT_REF.supabase.co/functions/v1/generate_ai_summaries',
+    url := 'https://cywzijedttqyqjtiexal.supabase.co/functions/v1/generate_ai_summaries',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true),
       'Content-Type', 'application/json'
@@ -82,7 +82,7 @@ SELECT cron.schedule(
   '30 2 * * *',
   $$
   SELECT net.http_post(
-    url := 'https://PROJECT_REF.supabase.co/functions/v1/tag_policy',
+    url := 'https://cywzijedttqyqjtiexal.supabase.co/functions/v1/tag_policy',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true),
       'Content-Type', 'application/json'
@@ -98,7 +98,7 @@ SELECT cron.schedule(
   '0 3 * * *',
   $$
   SELECT net.http_post(
-    url := 'https://PROJECT_REF.supabase.co/functions/v1/extract_politician_themes',
+    url := 'https://cywzijedttqyqjtiexal.supabase.co/functions/v1/extract_politician_themes',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true),
       'Content-Type', 'application/json'
@@ -114,7 +114,7 @@ SELECT cron.schedule(
   '15 3 * * *',
   $$
   SELECT net.http_post(
-    url := 'https://PROJECT_REF.supabase.co/functions/v1/recompute_honesty_scores',
+    url := 'https://cywzijedttqyqjtiexal.supabase.co/functions/v1/recompute_honesty_scores',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true),
       'Content-Type', 'application/json'
@@ -130,7 +130,7 @@ SELECT cron.schedule(
   '30 3 * * *',
   $$
   SELECT net.http_post(
-    url := 'https://PROJECT_REF.supabase.co/functions/v1/detect_status_changes_and_notify',
+    url := 'https://cywzijedttqyqjtiexal.supabase.co/functions/v1/detect_status_changes_and_notify',
     headers := jsonb_build_object(
       'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true),
       'Content-Type', 'application/json'
