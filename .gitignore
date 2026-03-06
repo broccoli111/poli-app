@@ -7,7 +7,6 @@ dist/
 .expo/
 *.tsbuildinfo
 .turbo/
-ios/
 android/
 *.log
 .DS_Store
